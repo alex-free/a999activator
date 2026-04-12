@@ -22,6 +22,7 @@ if [ -d "/private/var/root/Library/Lockdown/activation_records" ]; then
      chflags -R noschg /private/var/root/Library/Lockdown/activation_records
 fi
 # Checked here by the OS from i.e. a previous update.
+# plutil -key CacheExtra -key a6vjPkzcRjrsXmniFsm0dg -type bool -yes /private/var/mobile/Library/Caches/com.apple.MobileGestalt.plist
 tar zxvf /activate/activation_records.tar.gz -C /private/var/root/Library/Lockdown
 # Make immutable.
 chflags -R schg /private/var/root/Library/Lockdown/activation_records    
@@ -85,7 +86,7 @@ chflags -R schg /System/Library/Caches/com.apple.factorydata
 
 # If previously ran because debug=true Setup.app has already been moved back.
 if [ -d "/Applications/Setup.bak" ]; then
-    mv /Applications/Setup.bak /Applications/Setup.app
+    plutil -key CacheExtra -key a6vjPkzcRjrsXmniFsm0dg -type bool -yes /private/var/mobile/Library/Caches/com.apple.MobileGestalt.plist && mv /Applications/Setup.bak /Applications/Setup.app
 fi
 
 # Reboot to apply activation and delete us.
