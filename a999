@@ -71,9 +71,9 @@ did_you_follow_instructions() {
     pair_iphone
     read -p "
     
-1) Activate the iPhone. IMPORTANT: If you are going to use cellular features on iOS 9, your SIM card should be in the iPhone with an active carrier.
+1) Activate the iPhone. IMPORTANT: If you are going to use cellular features on iOS 9, your SIM card should be in the iPhone with an active carrier. 
 
-2) Sign in to iCloud and complete Setup.app. Get to the home screen.
+2) Sign in to iCloud and complete Setup.app. Get to the home screen. 
 
 3) Make sure Find My iPhone has been turned off.
 
@@ -204,7 +204,7 @@ get_activation() {
         # data_ark.plist tar.
         issh "cd /mnt1/activate; tar zcf data_ark.plist.tar.gz data_ark.plist; rm data_ark.plist"
 
-        # IC-Info.sisv tar.
+        # IC-Info.sisv tar. 
         # Silence error: "tar: copyfile pack (IC-Info.sisv) failed: No such file or directory" because we still get the file fine.
         issh "cd /mnt1/activate; tar zcf IC-Info.sisv.tar.gz IC-Info.sisv > /dev/null 2>&1; rm IC-Info.sisv"
 
@@ -232,7 +232,7 @@ get_activation() {
     done
 }
 
-downgrade() {
+downgrade() { 
     # Get Activation files.
     while ! got_all_activation_files; do
         get_activation
@@ -304,7 +304,7 @@ downgrade() {
     # Extract launchctl.tar.
     issh "cd /mnt1; tar -xf launchctl.tar -C .; rm launchctl.tar"
 
-    # Is this the symlink trick to write to /var?)
+    # Is this the symlink trick to write to /var?) 
     issh "cd /mnt1; mv private/var/lib private"
     
     issh "cd /mnt1; mv private/var/mobile/Library/Preferences/com.apple.springboard.plist private"
@@ -380,6 +380,7 @@ iphone_se_firmware_select() {
     PS3="Select iOS version to downgrade to: "
     options=(
         "9.3 (13C75) (21/3/2016)"
+        "9.3.1 (13E238) (31/3/2016)"
         "Exit"
     )
 
@@ -388,6 +389,10 @@ iphone_se_firmware_select() {
         case $opt in
             "9.3 (13C75) (21/3/2016)")
                 downgrade http://appldnld.apple.com/iOS9.3/031-20815-20160321-5102B932-EAA8-11E5-A488-C779BD379832/iPhone8,4_9.3_13E233_Restore.ipsw
+                break;
+                ;;
+            "9.3.1 (13E238) (31/3/2016)")
+                downgrade http://appldnld.apple.com/iOS9.3.1/031-55507-20160331-09A917D6-F5E6-11E5-BFDA-32CB2D794EB1/iPhone8,4_9.3.1_13E238_Restore.ipsw
                 break;
                 ;;
             "Exit")
