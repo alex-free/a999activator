@@ -2,7 +2,7 @@
 
 _By Alex Free_
 
-A completely automatic solution that tether downgrades to iOS 9.2.x, jailbreaks, and activates any iPhone 6S or iPhone 6S Plus. No blobs needed! Made possible by the work of many [others](#credits). iOS 9 WILL NEVER DIE. I had an iPhone 6S that I jailbroke with Pangu 9 on iOS 9.0.something back in the day, hence why I made this.
+A completely automatic solution that tether downgrades to iOS 9.2.x/9.3.x, jailbreaks, and activates any iPhone 6S/iPhone 6S Plus and iPhone SE. No blobs needed! Made possible by the work of many [others](#credits). iOS 9 WILL NEVER DIE. I had an iPhone 6S that I jailbroke with Pangu 9 on iOS 9.0.something back in the day, hence why I made this.
 
 Want this but for iOS 10.0 and up? Check out the sister project [Dusk Downgrade](https://github.com/alex-free/dusk-downgrade). Dusk Downgrade even works on iPhone 7 and iPhone 7 Plus.
 
@@ -132,7 +132,8 @@ Certian aspects of Turdus_ra1n (exploiting SEP, booting exploited iOS) can fail 
 
 ### What About iPads with A9(X)?
 
-iPad Pro 1st gen 12.7 inch in theory can work too in a future update. iPad Pro 1st gen 9.7 inch shipped with iOS 9.3, which is unable to be activated with my method, or any public method for that matter.
+iPad Pro 1st gen 12.7 inch in theory can work too in a future update. iPad Pro 1st gen 9.7 inch shipped with iOS 9.3, which is unable to be activated with my method, or any public method for that matter. 
+I encourage you to try this now since April 2026 an update has come that may be possible to have this now work on 9.3.x specifically. Open an issue and tag @NotHereForTheDong if you can figue out how to add the device to the a999 script.
 
 ## How This Works
 
@@ -146,17 +147,17 @@ Remember, this is all automatic (as possible)!
 
 4) Downgrades to iOS 10.2.1 to work around random rebooting to Recovery Mode and restore fails. This is the first step if activation files have already been backed up.
 
-5) Downgrades to target iOS 9.2.x.
+5) Downgrades to target iOS 9.2.x/9.3.x.
 
 6) Boots a custom ramdisk in Recovery mode that puts the activation tarball files, an activation script, and a launch daemon all on /. Jailbreaks the iPhone (needs a trigger to enable it but bootstrap is installed), disables Setup.app, and then reboots into Recovery Mode.
 
-7) Boots iOS 9.2.x.
+7) Boots iOS 9.2.x/9.3.x.
 
 8) User is prompted to sign in to Wi-Fi and then go to http://jbme.ddw.nu to enable the Jailbreak.
 
 9) Jailbreak triggers the previously in-active launch daemon. Launch daemon extracts all activation tarball files that were put on / into the proper /var places. After that it deletes itself and all other temp files. Setup.app is then re-enabled, and the iPhone is rebooted into Recovery mode.
 
-10) iPhone is booted into iOS 9.2.x. Activation status is checked and if successful a special boot script is created dynamically in the same directory as the a999 command which can be used to boot the device from Recovery Mode in the future.
+10) iPhone is booted into iOS 9.2.x/9.3.x Activation status is checked and if successful a special boot script is created dynamically in the same directory as the a999 command which can be used to boot the device from Recovery Mode in the future.
 
 ## Credits
 

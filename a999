@@ -37,7 +37,10 @@ restore_signed_ios_for_device() {
         restore_ipsw https://updates.cdn-apple.com/2025FallFCS/fullrestores/047-95429/C8FE847C-FE0E-49B1-9C7E-F56894B6E2BF/iPhone_4.7_15.8.7_19H411_Restore.ipsw
     elif [ $device = "iphone_6s_plus" ]; then
         restore_ipsw https://updates.cdn-apple.com/2025FallFCS/fullrestores/047-95293/18A0749D-A68D-430C-8E31-1920612F3229/iPhone_5.5_15.8.7_19H411_Restore.ipsw
+    elif [ $device = "ipad_pro" ]; then
+        restore_ipsw https://updates.cdn-apple.com/2025FallFCS/fullrestores/047-95701/756A1205-34B1-4E5E-8787-E7732EF88F8B/iPadPro_12.9_16.7.15_20H380_Restore.ipsw
     fi
+    
     # Clean up.
     restore_signed_ios=false
 
@@ -55,7 +58,9 @@ restore_ios_10_2_1_for_device() {
     elif [ $device = "iphone_se" ]; then
         restore_ipsw http://appldnld.apple.com/ios10.2.1/031-96769-20170112-61558B4E-D81D-11E6-9610-F301D55B5B9D/iPhoneSE_10.2.1_14D27_Restore.ipsw
     elif [ $device = "iphone_6s_plus" ]; then
-        restore_ipsw https://updates.cdn-apple.com/2025FallFCS/fullrestores/047-95293/18A0749D-A68D-430C-8E31-1920612F3229/iPhone_5.5_15.8.7_19H411_Restore.ipsw
+        restore_ipsw http://appldnld.apple.com/ios10.2.1/031-96800-20170112-6151CD56-D81D-11E6-A447-F501D55B5B9D/iPhone_5.5_10.2.1_14D27_Restore.ipsw
+    elif [ $device = "ipad_pro" ]; then
+        restore_ipsw http://appldnld.apple.com/ios10.2.1/031-96719-20170112-615A5764-D81D-11E6-A699-EE01D55B5B9D/iPadPro_12.9_10.2.1_14D27_Restore.ipsw
     fi
 }
 
@@ -340,6 +345,31 @@ downgrade() {
     echo -e "\nDONE!\n"
 }
 
+ipad_pro_firmware_select() {
+    PS3="Select iOS version to downgrade to: "
+    options=(
+        "9.3.1 (13E238) (31/3/2016)"
+        "Exit"
+    )
+
+    select opt in "${options[@]}"
+    do
+        case $opt in
+            "9.3.1 (13C75) (12/8/2015)")
+                downgrade http://appldnld.apple.com/iOS9.3.1/031-54964-20160331-099887E0-F5E6-11E5-8F56-1FCB2D794EB1/iPad6,7_9.3.1_13E238_Restore.ipsw
+                break;
+                ;;
+            "Exit")
+                break
+                ;;
+            *)
+                echo "Invalid option"
+                ;;
+        esac
+    done
+}
+
+
 iphone_6s_firmware_select() {
     PS3="Select iOS version to downgrade to: "
     options=(
@@ -479,7 +509,9 @@ elif [ $device = "iphone_6s_plus" ]; then
     iphone_6s_plus_firmware_select
 elif [ $device = "iphone_6s" ]; then
     iphone_6s_firmware_select
+elif [ $device = "ipad_pro" ]; then
+    ipad_pro_firmware_select
 else
-    echo "Error: only iPhone 6S and iPhone 6S Plus are supported by a999 activator."
+    echo "Error: only iPhone 6S, iPhone 6S Plus and iPhone SE are supported by a999 activator."
     exit 1
 fi
