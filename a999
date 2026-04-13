@@ -452,6 +452,7 @@ iphone_6s_plus_firmware_select() {
     options=(
         "9.2 (13C75) (12/8/2015)"
         "9.2.1 (13D15) (1/19/2016)"
+        "9.3 (13C75) (15/3/2016)"
         #"9.2.1 (13D20) (2/18/2016)" can't use because jbme doesn't support it
         "Exit"
     )
@@ -471,6 +472,10 @@ iphone_6s_plus_firmware_select() {
                 #downgrade http://appldnld.apple.com/ios9.2.1/031-49073-20160217-4BB05046-D44D-11E5-9D30-0852919DCAD8/iPhone8,2_9.2.1_13D20_Restore.ipsw
                 #break;
                 #;;
+            "9.3 (13C75) (15/3/2016)")
+                downgrade http://appldnld.apple.com/iOS9.3/031-28376-20160321-51006FEC-EAA8-11E5-AEC6-D279BD379832/iPhone8,2_9.3_13E234_Restore.ipsw
+                break;
+                ;;
             "Exit")
                 break
                 ;;
