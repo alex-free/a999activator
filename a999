@@ -381,6 +381,8 @@ iphone_se_firmware_select() {
     options=(
         "9.3 (13C75) (21/3/2016)"
         "9.3.1 (13E238) (31/3/2016)"
+        "9.3.2 (13F69) (16/5/2016)"
+        "9.3.3 (13G34) (18/7/2016)"
         "Exit"
     )
 
@@ -393,6 +395,14 @@ iphone_se_firmware_select() {
                 ;;
             "9.3.1 (13E238) (31/3/2016)")
                 downgrade http://appldnld.apple.com/iOS9.3.1/031-55507-20160331-09A917D6-F5E6-11E5-BFDA-32CB2D794EB1/iPhone8,4_9.3.1_13E238_Restore.ipsw
+                break;
+                ;;
+            "9.3.2 (13F69) (16/5/2016)")
+                downgrade http://appldnld.apple.com/ios9.3.2/031-61688-20160516-6A0F5782-13A7-11E6-93C9-A4D6400DF7EB/iPhone8,4_9.3.2_13F69_Restore.ipsw
+                break;
+                ;;
+            "9.3.3 (13G34) (18/7/2016)")
+                downgrade http://appldnld.apple.com/iOS9.3.3/031-60143-20160718-06E90A30-4378-11E6-81DC-8EF759E0E9B6/iPhone8,4_9.3.3_13G34_Restore.ipsw
                 break;
                 ;;
             "Exit")
