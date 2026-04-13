@@ -375,6 +375,10 @@ iphone_6s_firmware_select() {
     options=(
         "9.2 (13C75) (12/8/2015)"
         "9.2.1 (13D15) (1/19/2016)"
+        "9.3 (13C75) (15/3/2016)"
+        "9.3.1 (13E238) (31/3/2016)"
+        "9.3.2 (13F69) (16/5/2016)"
+        "9.3.3 (13G34) (18/7/2016)"
         #"9.2.1 (13D20) (2/18/2016)" Can't use because jbme doesn't support it
         "Exit"
     )
@@ -388,6 +392,22 @@ iphone_6s_firmware_select() {
                 ;;
             "9.2.1 (13D15) (1/19/2016)")
                 downgrade http://appldnld.apple.com/ios9.2.1/031-47635-20160119-97350056-B969-11E5-A65F-634D8FD31F8F/iPhone8,1_9.2.1_13D15_Restore.ipsw
+                break;
+                ;;
+            "9.3 (13C75) (21/3/2016)")
+                downgrade http://appldnld.apple.com/iOS9.3/031-20814-20160321-50FF38D4-EAA8-11E5-AAA8-C479BD379832/iPhone8,1_9.3_13E234_Restore.ipsw
+                break;
+                ;;
+            "9.3.1 (13E238) (31/3/2016)")
+                downgrade http://appldnld.apple.com/iOS9.3.1/031-55114-20160331-09A05894-F5E6-11E5-861F-21CB2D794EB1/iPhone8,1_9.3.1_13E238_Restore.ipsw
+                break;
+                ;;
+            "9.3.2 (13F69) (16/5/2016)")
+                downgrade http://appldnld.apple.com/ios9.3.2/031-62431-20160516-5E51F038-13A9-11E6-ACFA-61D9400DF7EB/iPhone8,1_9.3.2_13F69_Restore.ipsw
+                break;
+                ;;
+            "9.3.3 (13G34) (18/7/2016)")
+                downgrade http://appldnld.apple.com/iOS9.3.3/031-60536-20160718-06EE469E-4378-11E6-8185-A7F759E0E9B6/iPhone8,1_9.3.3_13G34_Restore.ipsw
                 break;
                 ;;
             #"9.2.1 (13D20) (2/18/2016)") Can't use because jbme doesn't support it
@@ -453,6 +473,9 @@ iphone_6s_plus_firmware_select() {
         "9.2 (13C75) (12/8/2015)"
         "9.2.1 (13D15) (1/19/2016)"
         "9.3 (13C75) (15/3/2016)"
+        "9.3.1 (13E238) (31/3/2016)"
+        "9.3.2 (13F69) (16/5/2016)"
+        "9.3.3 (13G34) (18/7/2016)"
         #"9.2.1 (13D20) (2/18/2016)" can't use because jbme doesn't support it
         "Exit"
     )
@@ -474,6 +497,18 @@ iphone_6s_plus_firmware_select() {
                 #;;
             "9.3 (13C75) (15/3/2016)")
                 downgrade http://appldnld.apple.com/iOS9.3/031-28376-20160321-51006FEC-EAA8-11E5-AEC6-D279BD379832/iPhone8,2_9.3_13E234_Restore.ipsw
+                break;
+                ;;
+            "9.3.1 (13E238) (31/3/2016)")
+                downgrade http://appldnld.apple.com/iOS9.3.1/031-54811-20160331-099896CC-F5E6-11E5-88BA-1ACB2D794EB1/iPhone8,2_9.3.1_13E238_Restore.ipsw
+                break;
+                ;;
+            "9.3.2 (13F69) (16/5/2016)")
+                downgrade http://appldnld.apple.com/ios9.3.2/031-62657-20160516-02ECC2F8-13AA-11E6-AFB3-D9DA400DF7EB/iPhone8,2_9.3.2_13F69_Restore.ipsw
+                break;
+                ;;
+            "9.3.3 (13G34) (18/7/2016)")
+                downgrade http://appldnld.apple.com/iOS9.3.3/031-60985-20160718-5C7A1B06-4378-11E6-8743-CEFC59E0E9B6/iPhone8,2_9.3.3_13G34_Restore.ipsw
                 break;
                 ;;
             "Exit")
