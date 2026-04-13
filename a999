@@ -51,18 +51,25 @@ restore_signed_ios_for_device() {
     did_you_follow_instructions
 }
 
-restore_ios_10_2_1_for_device() {
-    # Needed for iOS 9.x
-    if [ $device = "iphone_6s" ]; then
-        restore_ipsw http://appldnld.apple.com/ios10.2.1/031-96803-20170112-6151BFBE-D81D-11E6-8553-F701D55B5B9D/iPhone_4.7_10.2.1_14D27_Restore.ipsw
-    elif [ $device = "iphone_se" ]; then
-        restore_ipsw http://appldnld.apple.com/ios10.2.1/031-96769-20170112-61558B4E-D81D-11E6-9610-F301D55B5B9D/iPhoneSE_10.2.1_14D27_Restore.ipsw
-    elif [ $device = "iphone_6s_plus" ]; then
-        restore_ipsw http://appldnld.apple.com/ios10.2.1/031-96800-20170112-6151CD56-D81D-11E6-A447-F501D55B5B9D/iPhone_5.5_10.2.1_14D27_Restore.ipsw
-    elif [ $device = "ipad_pro" ]; then
-        restore_ipsw http://appldnld.apple.com/ios10.2.1/031-96719-20170112-615A5764-D81D-11E6-A699-EE01D55B5B9D/iPadPro_12.9_10.2.1_14D27_Restore.ipsw
-    fi
+exit_recovery() {
+        sleep 10 && ./bin/Legacy-iOS-Kit/bin/macos/irecovery2 -a
+        echo "Reset auto-boot variable for next step... Prevents recovery loop"
 }
+
+
+#restore_ios_10_2_1_for_device() {
+    # Needed for iOS 9.x
+#    if [ $device = "iphone_6s" ]; then
+#        restore_ipsw http://appldnld.apple.com/ios10.2.1/031-96803-20170112-6151BFBE-D81D-11E6-8553-F701D55B5B9D/iPhone_4.7_10.2.1_14D27_Restore.ipsw
+#    elif [ $device = "iphone_se" ]; then
+#        printf "skipping 10.2.1.........."
+#        restore_ipsw http://appldnld.apple.com/ios10.2.1/031-96769-20170112-61558B4E-D81D-11E6-9610-F301D55B5B9D/iPhoneSE_10.2.1_14D27_Restore.ipsw
+#    elif [ $device = "iphone_6s_plus" ]; then
+#        restore_ipsw http://appldnld.apple.com/ios10.2.1/031-96800-20170112-6151CD56-D81D-11E6-A447-F501D55B5B9D/iPhone_5.5_10.2.1_14D27_Restore.ipsw
+#    elif [ $device = "ipad_pro" ]; then
+#        restore_ipsw http://appldnld.apple.com/ios10.2.1/031-96719-20170112-615A5764-D81D-11E6-A699-EE01D55B5B9D/iPadPro_12.9_10.2.1_14D27_Restore.ipsw
+#    fi
+#}
 
 iproxy_start() {
     iproxy 6414 22 > /dev/null 2>&1 &
@@ -243,12 +250,13 @@ downgrade() {
         get_activation
     done
 
-    restore_ios_10_2_1_for_device
+    # restore_ios_10_2_1_for_device
     # Enable all steps for final restore.
     not_final_restore=false
     restore_ipsw $1
+    exit_recovery
     start_rd
-
+    
     # Mount.
     issh "/sbin/mount_hfs /dev/disk0s1s1 /mnt1"
     issh "/sbin/mount_hfs /dev/disk0s1s2 /mnt2"
@@ -332,6 +340,7 @@ downgrade() {
     issh "/sbin/reboot"
 
     iproxy_kill
+    exit_recovery
     boot_turdusra1n
     
     echo "Your iPhone is now jailbroken! You need to enable it now by visiting http://jbme.ddw.nu/ in Safari after signing in to your WiFi. Once the jailbreak is enabled, it will take 30 additional seconds from that point for your iPhone to automatically reboot into Recovery Mode after restoring activation. Do not sign in to iCloud just yet! a999activator is going to start checking for Recovery Mode in 60 seconds so that the LAST STEP can be completed!"
