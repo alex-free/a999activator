@@ -88,6 +88,14 @@ if [ -d "/Applications/Setup.bak" ]; then
     mv /Applications/Setup.bak /Applications/Setup.app
 fi
 
+if grep -e "13E" -e "13F" -e "13G" /private/var/mobile/Library/Caches/com.apple.MobileGestalt.plist; then
+    echo "9.3.x Found! Patching Gestalt" &&
+        plutil -key CacheExtra -key a6vjPkzcRjrsXmniFsm0dg -type bool -yes /private/var/mobile/Library/Caches/com.apple.MobileGestalt.plist
+else
+    echo "9.3.x Not Found! Skipping Gestalt"
+fi
+
+
 # Reboot to apply activation and delete us.
 # Keep files for test run once we have OpenSSH if debug=true.
 

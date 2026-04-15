@@ -31,10 +31,14 @@ iscpr() {
 
 
 restore_signed_ios_for_device() {
-    if [ $device = "iphone_6s_plus" ]; then
-        restore_ipsw https://updates.cdn-apple.com/2025FallFCS/fullrestores/047-95293/18A0749D-A68D-430C-8E31-1920612F3229/iPhone_5.5_15.8.7_19H411_Restore.ipsw
+    if [ $device = "iphone_se" ]; then
+        restore_ipsw https://updates.cdn-apple.com/2025FallFCS/fullrestores/047-95330/CF4E5626-8F95-4E41-946A-A2359C867B60/iPhone_4.0_64bit_15.8.7_19H411_Restore.ipsw
     elif [ $device = "iphone_6s" ]; then
         restore_ipsw https://updates.cdn-apple.com/2025FallFCS/fullrestores/047-95429/C8FE847C-FE0E-49B1-9C7E-F56894B6E2BF/iPhone_4.7_15.8.7_19H411_Restore.ipsw
+    elif [ $device = "iphone_6s_plus" ]; then
+        restore_ipsw https://updates.cdn-apple.com/2025FallFCS/fullrestores/047-95293/18A0749D-A68D-430C-8E31-1920612F3229/iPhone_5.5_15.8.7_19H411_Restore.ipsw
+    elif [ $device = "ipad_pro" ]; then
+        restore_ipsw https://updates.cdn-apple.com/2025FallFCS/fullrestores/047-95701/756A1205-34B1-4E5E-8787-E7732EF88F8B/iPadPro_12.9_16.7.15_20H380_Restore.ipsw
     fi
     
     # Clean up.
@@ -43,17 +47,29 @@ restore_signed_ios_for_device() {
     wait_for_normal_mode
     echo "iOS 15.8.7 has been restored! It will take some additional time for it to start up into Setup.app, please wait..."
  
+ 
     did_you_follow_instructions
 }
 
-restore_ios_10_2_1_for_device() {
-    # Needed for iOS 9.x
-    if [ $device = "iphone_6s" ]; then
-        restore_ipsw http://appldnld.apple.com/ios10.2.1/031-96803-20170112-6151BFBE-D81D-11E6-8553-F701D55B5B9D/iPhone_4.7_10.2.1_14D27_Restore.ipsw
-    elif [ $device = "iphone_6s_plus" ]; then
-        restore_ipsw http://appldnld.apple.com/ios10.2.1/031-96800-20170112-6151CD56-D81D-11E6-A447-F501D55B5B9D/iPhone_5.5_10.2.1_14D27_Restore.ipsw
-    fi
+exit_recovery() {
+        sleep 10 && ./bin/Legacy-iOS-Kit/bin/macos/irecovery2 -a
+        echo "Reset auto-boot variable for next step... Prevents recovery loop"
 }
+
+
+#restore_ios_10_2_1_for_device() {
+    # Needed for iOS 9.x
+#    if [ $device = "iphone_6s" ]; then
+#        restore_ipsw http://appldnld.apple.com/ios10.2.1/031-96803-20170112-6151BFBE-D81D-11E6-8553-F701D55B5B9D/iPhone_4.7_10.2.1_14D27_Restore.ipsw
+#    elif [ $device = "iphone_se" ]; then
+#        printf "skipping 10.2.1.........."
+#        restore_ipsw http://appldnld.apple.com/ios10.2.1/031-96769-20170112-61558B4E-D81D-11E6-9610-F301D55B5B9D/iPhoneSE_10.2.1_14D27_Restore.ipsw
+#    elif [ $device = "iphone_6s_plus" ]; then
+#        restore_ipsw http://appldnld.apple.com/ios10.2.1/031-96800-20170112-6151CD56-D81D-11E6-A447-F501D55B5B9D/iPhone_5.5_10.2.1_14D27_Restore.ipsw
+#    elif [ $device = "ipad_pro" ]; then
+#        restore_ipsw http://appldnld.apple.com/ios10.2.1/031-96719-20170112-615A5764-D81D-11E6-A699-EE01D55B5B9D/iPadPro_12.9_10.2.1_14D27_Restore.ipsw
+#    fi
+#}
 
 iproxy_start() {
     iproxy 6414 22 > /dev/null 2>&1 &
@@ -160,7 +176,7 @@ get_activation() {
     elif [ "$ios_version" != "15.8.7" ]; then
         echo "Latest iOS version is not installed. Restoring iPhone to iOS 15.8.7."
         restore_signed_ios=true
-    elif [ "$ios_version" = "15.8.7" ]; then
+    elif [ "$ios_version" = "15.8.7" or "16.7.15" ]; then
         did_you_follow_instructions
     fi
 
@@ -234,12 +250,13 @@ downgrade() {
         get_activation
     done
 
-    restore_ios_10_2_1_for_device
+    # restore_ios_10_2_1_for_device
     # Enable all steps for final restore.
     not_final_restore=false
     restore_ipsw $1
+    exit_recovery
     start_rd
-
+    
     # Mount.
     issh "/sbin/mount_hfs /dev/disk0s1s1 /mnt1"
     issh "/sbin/mount_hfs /dev/disk0s1s2 /mnt2"
@@ -255,9 +272,12 @@ downgrade() {
 
     # Transfer launch daemon com.alex.activate.plist to host.
     iscp "payload/com.alex.activate.plist" "root@127.0.0.1:/mnt1/Library/LaunchDaemons"
-
+    
     # Transfer activate script to host.
     iscp "payload/activate" "root@127.0.0.1:/mnt1/usr/bin"
+    
+    # Transfer plutil script to host.
+    iscp "payload/plutil" "root@127.0.0.1:/mnt1/usr/bin"
 
     # Transfer freeze.tar to host.
     iscp "bin/Legacy-iOS-Kit/resources/jailbreak/freeze.tar" "root@127.0.0.1:/mnt1"
@@ -271,6 +291,10 @@ downgrade() {
     # Set permissions for activate.
     issh "chmod 755 /mnt1/usr/bin/activate"
     issh "/usr/sbin/chown root:wheel /mnt1/usr/bin/activate"
+    
+    # Set permissions for plutil.
+    issh "chmod 755 /mnt1/usr/bin/plutil"
+    issh "/usr/sbin/chown root:wheel /mnt1/usr/bin/plutil"
 
     # Install chflags from ramdisk
     issh "cp -a /usr/bin/chflags /mnt1/usr/bin/chflags"
@@ -316,6 +340,7 @@ downgrade() {
     issh "/sbin/reboot"
 
     iproxy_kill
+    exit_recovery
     boot_turdusra1n
     
     echo "Your iPhone is now jailbroken! You need to enable it now by visiting http://jbme.ddw.nu/ in Safari after signing in to your WiFi. Once the jailbreak is enabled, it will take 30 additional seconds from that point for your iPhone to automatically reboot into Recovery Mode after restoring activation. Do not sign in to iCloud just yet! a999activator is going to start checking for Recovery Mode in 60 seconds so that the LAST STEP can be completed!"
@@ -329,11 +354,40 @@ downgrade() {
     echo -e "\nDONE!\n"
 }
 
+ipad_pro_firmware_select() {
+    PS3="Select iOS version to downgrade to: "
+    options=(
+        "9.3.1 (13E238) (31/3/2016)"
+        "Exit"
+    )
+
+    select opt in "${options[@]}"
+    do
+        case $opt in
+            "9.3.1 (13C75) (12/8/2015)")
+                downgrade http://appldnld.apple.com/iOS9.3.1/031-54964-20160331-099887E0-F5E6-11E5-8F56-1FCB2D794EB1/iPad6,7_9.3.1_13E238_Restore.ipsw
+                break;
+                ;;
+            "Exit")
+                break
+                ;;
+            *)
+                echo "Invalid option"
+                ;;
+        esac
+    done
+}
+
+
 iphone_6s_firmware_select() {
     PS3="Select iOS version to downgrade to: "
     options=(
         "9.2 (13C75) (12/8/2015)"
         "9.2.1 (13D15) (1/19/2016)"
+        "9.3 (13C75) (15/3/2016)"
+        "9.3.1 (13E238) (31/3/2016)"
+        "9.3.2 (13F69) (16/5/2016)"
+        "9.3.3 (13G34) (18/7/2016)"
         #"9.2.1 (13D20) (2/18/2016)" Can't use because jbme doesn't support it
         "Exit"
     )
@@ -347,6 +401,22 @@ iphone_6s_firmware_select() {
                 ;;
             "9.2.1 (13D15) (1/19/2016)")
                 downgrade http://appldnld.apple.com/ios9.2.1/031-47635-20160119-97350056-B969-11E5-A65F-634D8FD31F8F/iPhone8,1_9.2.1_13D15_Restore.ipsw
+                break;
+                ;;
+            "9.3 (13C75) (21/3/2016)")
+                downgrade http://appldnld.apple.com/iOS9.3/031-20814-20160321-50FF38D4-EAA8-11E5-AAA8-C479BD379832/iPhone8,1_9.3_13E234_Restore.ipsw
+                break;
+                ;;
+            "9.3.1 (13E238) (31/3/2016)")
+                downgrade http://appldnld.apple.com/iOS9.3.1/031-55114-20160331-09A05894-F5E6-11E5-861F-21CB2D794EB1/iPhone8,1_9.3.1_13E238_Restore.ipsw
+                break;
+                ;;
+            "9.3.2 (13F69) (16/5/2016)")
+                downgrade http://appldnld.apple.com/ios9.3.2/031-62431-20160516-5E51F038-13A9-11E6-ACFA-61D9400DF7EB/iPhone8,1_9.3.2_13F69_Restore.ipsw
+                break;
+                ;;
+            "9.3.3 (13G34) (18/7/2016)")
+                downgrade http://appldnld.apple.com/iOS9.3.3/031-60536-20160718-06EE469E-4378-11E6-8185-A7F759E0E9B6/iPhone8,1_9.3.3_13G34_Restore.ipsw
                 break;
                 ;;
             #"9.2.1 (13D20) (2/18/2016)") Can't use because jbme doesn't support it
@@ -364,12 +434,57 @@ iphone_6s_firmware_select() {
 }
 
 
+iphone_se_firmware_select() {
+
+    PS3="Select iOS version to downgrade to: "
+    options=(
+        "9.3 (13C75) (21/3/2016)"
+        "9.3.1 (13E238) (31/3/2016)"
+        "9.3.2 (13F69) (16/5/2016)"
+        "9.3.3 (13G34) (18/7/2016)"
+        "Exit"
+    )
+
+        select opt in "${options[@]}"
+    do
+        case $opt in
+            "9.3 (13C75) (21/3/2016)")
+                downgrade http://appldnld.apple.com/iOS9.3/031-20815-20160321-5102B932-EAA8-11E5-A488-C779BD379832/iPhone8,4_9.3_13E233_Restore.ipsw
+                break;
+                ;;
+            "9.3.1 (13E238) (31/3/2016)")
+                downgrade http://appldnld.apple.com/iOS9.3.1/031-55507-20160331-09A917D6-F5E6-11E5-BFDA-32CB2D794EB1/iPhone8,4_9.3.1_13E238_Restore.ipsw
+                break;
+                ;;
+            "9.3.2 (13F69) (16/5/2016)")
+                downgrade http://appldnld.apple.com/ios9.3.2/031-61688-20160516-6A0F5782-13A7-11E6-93C9-A4D6400DF7EB/iPhone8,4_9.3.2_13F69_Restore.ipsw
+                break;
+                ;;
+            "9.3.3 (13G34) (18/7/2016)")
+                downgrade http://appldnld.apple.com/iOS9.3.3/031-60143-20160718-06E90A30-4378-11E6-81DC-8EF759E0E9B6/iPhone8,4_9.3.3_13G34_Restore.ipsw
+                break;
+                ;;
+            "Exit")
+                break
+                ;;
+            *)
+                echo "Invalid option"
+                ;;
+        esac
+    done
+}
+
+
 iphone_6s_plus_firmware_select() {
 
     PS3="Select iOS version to downgrade to: "
     options=(
         "9.2 (13C75) (12/8/2015)"
         "9.2.1 (13D15) (1/19/2016)"
+        "9.3 (13C75) (15/3/2016)"
+        "9.3.1 (13E238) (31/3/2016)"
+        "9.3.2 (13F69) (16/5/2016)"
+        "9.3.3 (13G34) (18/7/2016)"
         #"9.2.1 (13D20) (2/18/2016)" can't use because jbme doesn't support it
         "Exit"
     )
@@ -389,6 +504,22 @@ iphone_6s_plus_firmware_select() {
                 #downgrade http://appldnld.apple.com/ios9.2.1/031-49073-20160217-4BB05046-D44D-11E5-9D30-0852919DCAD8/iPhone8,2_9.2.1_13D20_Restore.ipsw
                 #break;
                 #;;
+            "9.3 (13C75) (15/3/2016)")
+                downgrade http://appldnld.apple.com/iOS9.3/031-28376-20160321-51006FEC-EAA8-11E5-AEC6-D279BD379832/iPhone8,2_9.3_13E234_Restore.ipsw
+                break;
+                ;;
+            "9.3.1 (13E238) (31/3/2016)")
+                downgrade http://appldnld.apple.com/iOS9.3.1/031-54811-20160331-099896CC-F5E6-11E5-88BA-1ACB2D794EB1/iPhone8,2_9.3.1_13E238_Restore.ipsw
+                break;
+                ;;
+            "9.3.2 (13F69) (16/5/2016)")
+                downgrade http://appldnld.apple.com/ios9.3.2/031-62657-20160516-02ECC2F8-13AA-11E6-AFB3-D9DA400DF7EB/iPhone8,2_9.3.2_13F69_Restore.ipsw
+                break;
+                ;;
+            "9.3.3 (13G34) (18/7/2016)")
+                downgrade http://appldnld.apple.com/iOS9.3.3/031-60985-20160718-5C7A1B06-4378-11E6-8743-CEFC59E0E9B6/iPhone8,2_9.3.3_13G34_Restore.ipsw
+                break;
+                ;;
             "Exit")
                 break
                 ;;
@@ -421,11 +552,15 @@ fi
 startup
 detect_iphone
 
-if [ $device = "iphone_6s_plus" ]; then
+if [ $device = "iphone_se" ]; then
+    iphone_se_firmware_select
+elif [ $device = "iphone_6s_plus" ]; then
     iphone_6s_plus_firmware_select
 elif [ $device = "iphone_6s" ]; then
     iphone_6s_firmware_select
+elif [ $device = "ipad_pro" ]; then
+    ipad_pro_firmware_select
 else
-    echo "Error: only iPhone 6S and iPhone 6S Plus are supported by a999 activator."
+    echo "Error: only iPhone 6S, iPhone 6S Plus and iPhone SE are supported by a999 activator."
     exit 1
 fi
