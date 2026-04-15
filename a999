@@ -176,7 +176,7 @@ get_activation() {
     elif [ "$ios_version" != "15.8.7" ]; then
         echo "Latest iOS version is not installed. Restoring iPhone to iOS 15.8.7."
         restore_signed_ios=true
-    elif [ "$ios_version" = "15.8.7" ]; then
+    elif [ "$ios_version" = "15.8.7" or "16.7.15" ]; then
         did_you_follow_instructions
     fi
 
