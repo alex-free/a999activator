@@ -32,16 +32,16 @@ iscpr() {
 
 restore_signed_ios_for_device() {
     if [ $device = "iphone_6s_plus" ]; then
-        restore_ipsw https://updates.cdn-apple.com/2025FallFCS/fullrestores/047-95293/18A0749D-A68D-430C-8E31-1920612F3229/iPhone_5.5_15.8.7_19H411_Restore.ipsw
+        restore_ipsw https://updates.cdn-apple.com/2025FallFCS/fullrestores/122-77536/9EE30DC1-EC4B-47CE-A002-24CD6B18947D/iPhone_5.5_15.8.8_19H422_Restore.ipsw
     elif [ $device = "iphone_6s" ]; then
-        restore_ipsw https://updates.cdn-apple.com/2025FallFCS/fullrestores/047-95429/C8FE847C-FE0E-49B1-9C7E-F56894B6E2BF/iPhone_4.7_15.8.7_19H411_Restore.ipsw
+        restore_ipsw https://updates.cdn-apple.com/2025FallFCS/fullrestores/122-77510/5D4563BF-445C-4D8D-AF56-0BAC336265F3/iPhone_4.7_15.8.8_19H422_Restore.ipsw
     fi
     
     # Clean up.
     restore_signed_ios=false
 
     wait_for_normal_mode
-    echo "iOS 15.8.7 has been restored! It will take some additional time for it to start up into Setup.app, please wait..."
+    echo "iOS 15.8.8 has been restored! It will take some additional time for it to start up into Setup.app, please wait..."
  
     did_you_follow_instructions
 }
@@ -155,12 +155,12 @@ get_activation() {
 
     # Set $not_normal when first connecting/detecting iPhone if it is in Recovery or DFU Mode.
     if [ "$not_normal" = "true" ]; then
-        echo "Your iPhone is not in normal mode, so iOS version can not be determined. Restoring iPhone to iOS 15.8.7."
+        echo "Your iPhone is not in normal mode, so iOS version can not be determined. Restoring iPhone to iOS 15.8.8."
         restore_signed_ios=true
-    elif [ "$ios_version" != "15.8.7" ]; then
-        echo "Latest iOS version is not installed. Restoring iPhone to iOS 15.8.7."
+    elif [ "$ios_version" != "15.8.8" ]; then
+        echo "Latest iOS version is not installed. Restoring iPhone to iOS 15.8.8."
         restore_signed_ios=true
-    elif [ "$ios_version" = "15.8.7" ]; then
+    elif [ "$ios_version" = "15.8.8" ]; then
         did_you_follow_instructions
     fi
 
@@ -176,7 +176,7 @@ get_activation() {
         # Mount.
         issh "mount_filesystems"
 
-        # Ramdisk allows RW of / on unjailbroken iOS 15.8.7. on /private/var we have stable RO. RW sometimes doesn't work, so use / as scratch dir.
+        # Ramdisk allows RW of / on unjailbroken iOS 15.8.8. on /private/var we have stable RO. RW sometimes doesn't work, so use / as scratch dir.
         issh "mkdir /mnt1/activate"
             
         # Copy activation_records.
